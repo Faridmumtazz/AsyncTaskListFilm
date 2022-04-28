@@ -1,6 +1,7 @@
 package mumtaz.binar.asynctasklistfilm
 
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.content.Context
 import android.nfc.tech.MifareUltralight.get
 import android.os.AsyncTask
@@ -19,30 +20,47 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        adapterfilm = AdapterFilm(){}
-        rv_binar.layoutManager = LinearLayoutManager(this)
-        rv_binar.adapter = adapterfilm
-
         AsyncTaskFilm()
     }
 
-    inner class AsyncTaskFilm : AsyncTask<Int, Void, String>() {
-        @SuppressLint("WrongThread")
-        override fun doInBackground(vararg p0: Int?): String {
+    inner class AsyncTaskFilm : AsyncTask<Void, Void, Void>() {
+        lateinit var pdialog : ProgressDialog
+
+        override fun onPreExecute() {
+            super.onPreExecute()
+            pdialog = ProgressDialog(this@MainActivity)
+            pdialog.show()
+        }
+
+        override fun doInBackground(vararg p0: Void?): Void? {
+            rv_binar.layoutManager = LinearLayoutManager(this@MainActivity)
+            adapterfilm = AdapterFilm()
+            rv_binar.adapter = adapterfilm
+
+            return null
+        }
+
+        override fun onProgressUpdate(vararg values: Void?) {
+            super.onProgressUpdate(*values)
+        }
+
+        override fun onPostExecute(result: Void?) {
+            super.onPostExecute(result)
+            pdialog.dismiss()
+
             val viewModel = ViewModelProvider(this@MainActivity).get(ViewModelFilm::class.java)
+
             viewModel.getLiveDataObserver().observe(this@MainActivity, Observer {
-                if (it != null) {
+                if (it != null){
                     adapterfilm.setDataFilm(it)
                     adapterfilm.notifyDataSetChanged()
                 }
             })
+
             viewModel.getApiFilm()
-            return viewModel.toString()
-        }
-        override fun onPostExecute(result: String?) {
-            super.onPostExecute(result)
 
         }
 
     }
+
 }

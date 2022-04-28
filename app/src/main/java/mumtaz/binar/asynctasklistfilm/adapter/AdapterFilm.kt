@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.item_film.view.*
 import mumtaz.binar.asynctasklistfilm.R
 import mumtaz.binar.asynctasklistfilm.model.GetAllFilmResponseItem
 
-class AdapterFilm  (private var onclick : (GetAllFilmResponseItem)->Unit): RecyclerView.Adapter<AdapterFilm.ViewHolder>() {
+class AdapterFilm  (): RecyclerView.Adapter<AdapterFilm.ViewHolder>() {
 
     private var datafilm : List<GetAllFilmResponseItem>? = null
     fun setDataFilm(film : List<GetAllFilmResponseItem>){
@@ -33,9 +33,7 @@ class AdapterFilm  (private var onclick : (GetAllFilmResponseItem)->Unit): Recyc
         holder.itemView.tv_tglfilm.text = datafilm!![position].createdAt
         holder.itemView.tv_sutradarafilm.text = datafilm!![position].director
 
-        holder.itemView.card_film.setOnClickListener {
-            onclick(datafilm!![position])
-        }
+
     }
 
     override fun getItemCount(): Int {
